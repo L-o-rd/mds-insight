@@ -7,6 +7,7 @@ import java.io.File;
 public final class Art {
 	public final static Bitmap logo = Art.load("./res/logo.png");
 	public final static Bitmap font = Art.load("./res/font.png");
+	public final static Bitmap back = Art.load("./res/back.png");
 	
 	public static Bitmap load(final String path) {
 		try {

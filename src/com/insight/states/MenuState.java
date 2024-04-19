@@ -1,9 +1,10 @@
 package com.insight.states;
 
+import com.insight.graphics.SmallButton;
+import com.insight.graphics.BigButton;
 import com.insight.graphics.Screen;
 import com.insight.graphics.Bitmap;
 import com.insight.graphics.Button;
-import com.insight.graphics.Font;
 import com.insight.graphics.Art;
 
 import com.insight.Content;
@@ -17,34 +18,35 @@ public class MenuState extends State {
 	private int btx = Content.WIDTH, bty = Content.HEIGHT;
 	private double fadein = 0, fadedir = 0.025;
 	private boolean animation, waiting;
+	private int xback = 0, lx = 0;
 	
 	private final Button create, games, join, exit;
 
 	public MenuState(final Game game) {
 		super(game);
 		
-		this.join = new Button(55, 15, (Content.WIDTH - 55) >> 1, (Content.HEIGHT - 35) >> 1, "Join") {
+		this.join = new SmallButton((Content.WIDTH >> 1) - SmallButton.width() - 5, ((Content.HEIGHT - SmallButton.height()) >> 1), "Join") {
 			@Override
 			public void clicked() {
-				System.out.println("join");
+				game.setState(JOIN_STATE);
 			}
 		};
 		
-		this.create = new Button(55, 15, (Content.WIDTH - 55) >> 1, ((Content.HEIGHT - 35) >> 1) + 25, "Create") {
+		this.create = new SmallButton((Content.WIDTH >> 1) + 5, ((Content.HEIGHT - SmallButton.height()) >> 1), "Create") {
 			@Override
 			public void clicked() {
-				System.out.println("create");
+				game.setState(CREATE_STATE);
 			}
 		};
 		
-		this.games = new Button(75, 15, (Content.WIDTH - 75) >> 1, ((Content.HEIGHT - 35) >> 1) + 50, "Minigames") {
+		this.games = new BigButton((Content.WIDTH - BigButton.width()) >> 1, ((Content.HEIGHT + SmallButton.height()) >> 1) + 10, "Minigames") {
 			@Override
 			public void clicked() {
-				System.out.println("minigames");
+				game.setState(MINIGAMES_STATE);
 			}
 		};
 		
-		this.exit = new Button(45, 15, (Content.WIDTH - 45) >> 1, Content.HEIGHT - 20, "Exit") {
+		this.exit = new SmallButton((Content.WIDTH - SmallButton.width()) >> 1, (Content.HEIGHT - SmallButton.height() - 10), "Exit") {
 			@Override
 			public void clicked() {
 				System.exit(0);
@@ -57,7 +59,11 @@ public class MenuState extends State {
 
 	@Override
 	public void render(Screen screen) {
-		screen.fill(0, 0, screen.width, screen.height, 0xf6c858);
+		screen.clear(0xf6c858);
+		screen.blitWrap(Art.back, xback * 1, 0);
+		screen.blitWrap(Art.back, 30 + xback + Art.back.width, 0);
+		++xback;
+		
 		if(this.animation) {
 			screen.blit(Art.logo, btx, bty, 0x131313);
 			screen.blit(Art.logo, upx, upy);
@@ -85,6 +91,11 @@ public class MenuState extends State {
 				else if(fadein <= 0.0) fadedir = 0.025;
 			}
 		} else {
+			screen.blit(Art.logo, ((screen.width - Art.logo.width) >> 1) + 2 + lx, Art.logo.height + 12 + lx, 0x131313);
+			screen.blit(Art.logo, ((screen.width - Art.logo.width) >> 1) + lx, Art.logo.height + 10);
+			lx = (int)(2 * Math.cos(fadein));
+			fadein += 0.075;
+			
 			create.render(screen, game.input);
 			games.render(screen, game.input);
 			join.render(screen, game.input);
@@ -97,7 +108,11 @@ public class MenuState extends State {
 		if(this.animation && this.waiting) {
 			if(game.input.any()) {
 				this.animation = false;
+			} else if(game.input.mouse[0]) {
+				this.animation = false;
+				game.input.mouse[0] = false;
 			}
+			
 		} else if(!this.animation) {
 			create.update(input);
 			games.update(input);
