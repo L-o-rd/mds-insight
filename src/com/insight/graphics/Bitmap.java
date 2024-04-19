@@ -1,5 +1,7 @@
 package com.insight.graphics;
 
+import java.util.Arrays;
+
 public class Bitmap {
 	public final int width, height, pixels[];
 	public static final int key = 0xff8112a0;
@@ -30,6 +32,21 @@ public class Bitmap {
 		final int g = (int) (cg + (og - cg) * p);
 		final int b = (int) (cb + (ob - cb) * p);
 		return (r << 16) | (g << 8) | b;
+	}
+	
+	public void clear(final int color) {
+		Arrays.fill(this.pixels, color);
+	}
+	
+	public void blitWrap(Bitmap other, int xo, int yo) {
+		for(int y = 0; y < other.height; ++y) {
+			int sy = (this.height + yo + y) % this.height;
+			for(int x = 0; x < other.width; ++x) {
+				int sx = (this.width + xo + x) % this.width;
+				int pix = other.pixels[x + y * other.width];
+				if(pix != key) this.pixels[sx + sy * this.width] = pix;
+			}
+		}
 	}
 	
 	public void blit(Bitmap other, int xo, int yo) {
