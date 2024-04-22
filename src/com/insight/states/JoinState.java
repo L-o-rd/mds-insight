@@ -12,16 +12,16 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class JoinState extends State {
+	private boolean codeFound, wasClicked;
+	private String inputText;
+	private Button submit;
 	private Button back;
 	private TextBox box;
-	private Button submit;
-	private Button enterCodeAgain;
-	private String inputText;
-	private boolean codeFound = Boolean.parseBoolean(null);
 
 	public JoinState(Game game) {
 		super(game);
 		
+		wasClicked = false;
 		this.box = new TextBox((Content.HEIGHT - 15) >> 1, 15, 6);
 
 		this.submit = new BigButton((Content.WIDTH - BigButton.width()) >> 1, ((Content.HEIGHT + SmallButton.height()) >> 1) + 10, "Submit") {
@@ -29,11 +29,11 @@ public class JoinState extends State {
 			public void clicked() {
 				// Set the input text to the variable when the submit button is clicked
 				inputText = box.getInputText();
+				verifyInputFile(inputText);
+				wasClicked = true;
 
 				if (codeFound) {
-					game.setState(MINIGAMES_STATE);
-				} else {
-					game.setState(MENU_STATE);
+					game.setState(ROOM_STATE);
 				}
 			}
 		};
@@ -41,23 +41,18 @@ public class JoinState extends State {
 		this.back = new SmallButton((Content.WIDTH - SmallButton.width()) >> 1, Content.HEIGHT - 10 - SmallButton.height(), "Back") {
 			@Override
 			public void clicked() {
+				wasClicked = false;
 				game.setState(State.MENU_STATE);
 			}
 		};
 	}
 
-	public boolean verifyInputFile(String inputCode) {
-
-		String filePath = new File("./res/ids").getAbsolutePath();
-
-		System.out.println("Text file located at: " + filePath);
-
-		File file = new File(filePath);
-		boolean codeFound = false;
-
+	private void verifyInputFile(String inputCode) {
+		this.codeFound = false;
 		try {
-			FileReader reader = new FileReader(file);
-			BufferedReader bufferedReader = new BufferedReader(reader);
+			BufferedReader bufferedReader = new BufferedReader(
+				new FileReader(new File("./res/ids"))
+			);
 
 			String code;
 			while ((code = bufferedReader.readLine()) != null) {
@@ -68,32 +63,18 @@ public class JoinState extends State {
 			}
 
 			bufferedReader.close();
-
-			if (codeFound) {
-				System.out.println("The code " + inputCode + " is correct");
-			} else {
-				System.out.println("The code " + inputCode + " is not correct");
-			}
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		return codeFound;
 	}
 
 	@Override
 	public void render(Screen screen) {
 		screen.fill(0, 0, screen.width, screen.height, 0xf6c858);
 
-		if (!codeFound) {
-			screen.fill(0, 0, screen.width, screen.height, 0xf6c858);
-
-			Font.write(screen, "Code " + inputText + " is not valid", (screen.width - 12 * 7) >> 1, (screen.height - 9) >> 1, 0xdfdfdf);
-
-			this.
-
-			game.setState(JOIN_STATE);
+		if (wasClicked && !codeFound) {
+			final String msg = "Join code '" + inputText + "' is not valid!";
+			Font.write(screen, msg, (screen.width - msg.length() * Font.CHAR_WIDTH) >> 1, Font.CHAR_HEIGHT * 6, 0);
 		}
 
 		this.box.render(screen, game.input);
