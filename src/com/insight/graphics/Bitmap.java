@@ -49,6 +49,20 @@ public class Bitmap {
 		}
 	}
 	
+	public void blitHFlip(Bitmap other, int xo, int yo) {
+		for(int y = 0; y < other.height; ++y) {
+			int starty = yo + y;
+			if(starty < 0 || starty >= this.height) continue;
+			for(int x = 0; x < other.width; ++x) {
+				int startx = xo + x;
+				if(startx < 0 || startx >= this.width) continue;
+				
+				int pix = other.pixels[(other.width - x - 1) + y * other.width];
+				if(pix != key) this.pixels[startx + starty * this.width] = pix;
+			}
+		}
+	}
+	
 	public void blit(Bitmap other, int xo, int yo) {
 		for(int y = 0; y < other.height; ++y) {
 			int starty = yo + y;
