@@ -7,7 +7,6 @@ import com.insight.Input;
 
 public class TextBox {
 	private static final int BORDER_SIZE = 2;
-	
 	public int x, y, width, height, limit;
 	private boolean selected;
 	public StringBuffer sb;
@@ -78,5 +77,10 @@ public class TextBox {
 		return input.mx >= this.x && input.my >= this.y &&
 				input.mx <= (this.x + this.width) &&
 				input.my <= (this.y + this.height);
+	}
+
+	// Method to retrieve the input text
+	public String getInputText() {
+		return sb.toString();
 	}
 }
