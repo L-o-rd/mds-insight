@@ -7,6 +7,8 @@ import com.insight.State;
 import com.insight.graphics.*;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -57,25 +59,26 @@ public class CreateState extends State {
 
 	private static Set<String> loadExistingIds() {
 		Set<String> existingIds = new HashSet<>();
+		if (fileExists(ID_FILE_PATH)) {
 		try(BufferedReader reader = new BufferedReader(new FileReader(ID_FILE_PATH))) {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				existingIds . add (line.trim());
 			}
-		}catch (IOException e) {
-			System.err.println("File not found or error reading the file:");
-			e.printStackTrace();
-		}
+		} catch (IOException e) {
+			System.err.println("error reading the file:" + e.getMessage());
+		} }
 		return existingIds;
 	}
 
 	private static void saveIdInFile (String id) {
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(ID_FILE_PATH))){
-			writer.write(id);
-			writer.newLine();
-		}catch (IOException e){
-			System.err.println("File not found or error writing the file:");
-			e.printStackTrace();
+		if (fileExists(ID_FILE_PATH)) {
+			try (BufferedWriter writer = new BufferedWriter(new FileWriter(ID_FILE_PATH, true))) {
+				writer.write(id);
+				writer.newLine();
+			} catch (IOException e) {
+				System.err.println("error writing the file:" + e.getMessage());
+			}
 		}
 	}
 
@@ -95,6 +98,10 @@ public class CreateState extends State {
 	public void update(Input input) {
 		this.back.update(input);
 		this.generateCode.update(input);
+	}
+
+	private static boolean fileExists(String ID_FILE_PATH) {
+		return Files.exists(Paths.get(ID_FILE_PATH));
 	}
 
 }
