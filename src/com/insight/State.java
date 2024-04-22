@@ -7,6 +7,8 @@ public abstract class State {
 	public static final int JOIN_STATE = 1;
 	public static final int CREATE_STATE = 2;
 	public static final int MINIGAMES_STATE = 3;
+	public static final int ROOM_STATE = 4;
+	public static final int XO_STATE = 5;
 	
 	protected Game game;
 	
