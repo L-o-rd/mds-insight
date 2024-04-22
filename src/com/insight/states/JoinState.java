@@ -14,9 +14,10 @@ import java.io.IOException;
 public class JoinState extends State {
 	private Button back;
 	private TextBox box;
-	// Variable to store the input text
 	private Button submit;
+	private Button enterCodeAgain;
 	private String inputText;
+	private boolean codeFound = Boolean.parseBoolean(null);
 
 	public JoinState(Game game) {
 		super(game);
@@ -28,9 +29,7 @@ public class JoinState extends State {
 			public void clicked() {
 				// Set the input text to the variable when the submit button is clicked
 				inputText = box.getInputText();
-				boolean codeFound = verifyInputFile(inputText);
-				//	boolean codeFound = verifyInput(inputText); // daca nu merge cu fisierul text codes.txt
-																// uncomment this and comment verifyInputFile(inputText)
+
 				if (codeFound) {
 					game.setState(MINIGAMES_STATE);
 				} else {
@@ -47,30 +46,10 @@ public class JoinState extends State {
 		};
 	}
 
-	public boolean verifyInput(String inputCode) {
-		boolean codeFound = false;
-
-		String[] codes = {"123abc", "123456", "abc456"};
-
-		for (String code : codes) {
-			if (code.equalsIgnoreCase(inputCode)) {
-				codeFound = true;
-				break;
-			}
-		}
-
-		if (codeFound) {
-			System.out.println("The code " + inputCode + " is correct");
-		} else {
-			System.out.println("The code " + inputCode + " is not correct");
-		}
-
-		return codeFound;
-	}
-
 	public boolean verifyInputFile(String inputCode) {
 
-		String filePath = new File("src/com/insight/files/codes.txt").getAbsolutePath();
+		String filePath = new File("./res/ids").getAbsolutePath();
+
 		System.out.println("Text file located at: " + filePath);
 
 		File file = new File(filePath);
@@ -106,6 +85,17 @@ public class JoinState extends State {
 	@Override
 	public void render(Screen screen) {
 		screen.fill(0, 0, screen.width, screen.height, 0xf6c858);
+
+		if (!codeFound) {
+			screen.fill(0, 0, screen.width, screen.height, 0xf6c858);
+
+			Font.write(screen, "Code " + inputText + " is not valid", (screen.width - 12 * 7) >> 1, (screen.height - 9) >> 1, 0xdfdfdf);
+
+			this.
+
+			game.setState(JOIN_STATE);
+		}
+
 		this.box.render(screen, game.input);
 		this.back.render(screen, game.input);
 		this.submit.render(screen, game.input);
