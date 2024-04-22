@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class CreateState extends State {
 
-	private Button back;
+	private Button next,back;
 	private boolean idGenerated = false;
 	private Button generateCode;
 	private static final String ID_FILE_PATH = "./res/ids";
@@ -21,12 +21,21 @@ public class CreateState extends State {
 	public CreateState(Game game) {
 		super(game);
 
-		this.back = new SmallButton((Content.WIDTH - SmallButton.width()) >> 1, Content.HEIGHT -10-SmallButton.height(), "Back") {
+		this.next = new SmallButton((Content.WIDTH >> 1) - SmallButton.width() - 5, Content.HEIGHT - 10 - SmallButton.height(), "Next") {
 			@Override
-			public void clicked() {game.setState(State.MENU_STATE); }
+			public void clicked() {
+
+			}
 		};
 
-		this.generateCode = new BigButton((Content.WIDTH - BigButton.width()-200)  >>1, ((Content.HEIGHT + BigButton.height() - 170) >> 1) ,"Generate Code") {
+		this.back = new SmallButton((Content.WIDTH >> 1) + 5, Content.HEIGHT - 10 - SmallButton.height(), "Back") {
+			@Override
+			public void clicked() {
+				game.setState(MENU_STATE);
+			}
+		};
+
+		this.generateCode = new BigButton((Content.WIDTH - BigButton.width()) / 2,  ((Content.HEIGHT - BigButton.height() ) /2),"Generate Code") {
 			@Override
 			public void clicked() {
 				idGenerated = true;
@@ -46,9 +55,9 @@ public class CreateState extends State {
 		do {
 			StringBuffer sb = new StringBuffer(6);
 			for ( int i = 0; i<=5; i++)
-				{
-					sb.append(chars.charAt(random.nextInt(chars.length())));
-				}
+			{
+				sb.append(chars.charAt(random.nextInt(chars.length())));
+			}
 			Id = sb.toString();
 		}while(existingIds.contains(Id));
 		saveIdInFile (Id);
@@ -83,10 +92,11 @@ public class CreateState extends State {
 	public void render(Screen screen) {
 		screen.fill(0, 0, screen.width, screen.height, 0xf6c858);
 		this.back.render(screen, game.input);
+		this.next.render(screen, game.input);
 		this.generateCode.render(screen, game.input);
 
 		if (idGenerated && uniqueId != null) {
-			Font.write(screen, uniqueId, (screen.width - uniqueId.length() - 60) >> 1, (screen.height - 140) >> 1, 0x607981 );
+			Font.write(screen, uniqueId, (screen.width - uniqueId.length() - 40) >> 1, (screen.height + 20) / 2, 0x607981 );
 		}
 	}
 
@@ -94,6 +104,7 @@ public class CreateState extends State {
 	@Override
 	public void update(Input input) {
 		this.back.update(input);
+		this.next.update(input);
 		this.generateCode.update(input);
 	}
 
