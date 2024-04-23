@@ -51,7 +51,7 @@ public class JoinState extends State {
 		this.codeFound = false;
 		try {
 			BufferedReader bufferedReader = new BufferedReader(
-				new FileReader(new File("./res/ids"))
+				new FileReader(new File(CreateState.ID_FILE_PATH))
 			);
 
 			String code;

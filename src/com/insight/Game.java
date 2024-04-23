@@ -8,6 +8,7 @@ import com.insight.states.CreateState;
 import com.insight.states.JoinState;
 import com.insight.states.MenuState;
 import com.insight.states.MinigamesState;
+import com.insight.states.PrepareState;
 import com.insight.states.RoomState;
 import com.insight.states.XOState;
 
@@ -25,6 +26,7 @@ public class Game {
 		this.states.add(new MinigamesState(this));
 		this.states.add(new RoomState(this));
 		this.states.add(new XOState(this));
+		this.states.add(new PrepareState(this));
 		this.current = State.MENU_STATE;
 		this.input = input;
 	}

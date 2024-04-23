@@ -5,17 +5,30 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.List;
 
 public class Input implements KeyListener, MouseListener, MouseMotionListener {
 	private static final double MSCALE = 1 / (double) Content.SCALE;
 	
+	private static final List<Integer> forbidden = List.of(
+		KeyEvent.VK_CAPS_LOCK,
+		KeyEvent.VK_SHIFT,
+		KeyEvent.VK_BACK_SPACE,
+		KeyEvent.VK_TAB,
+		KeyEvent.VK_ESCAPE
+	);
+	
 	public final boolean[] keys;
 	public boolean mouse[];
+	// public StringBuffer sb;
+	public char lastChar;
 	public double mx, my;
 	
 	public Input() {
 		this.keys = new boolean[KeyEvent.KEY_LAST + 1];
+		// this.sb = new StringBuffer();
 		this.mouse = new boolean[2];
+		this.lastChar = '\b';
 	}
 
 	@Override
@@ -27,6 +40,10 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener {
 		
 		if(0 <= code && code < this.keys.length) {
 			this.keys[code] = true;
+		}
+		
+		if(!forbidden.contains(code)) {
+			lastChar = e.getKeyChar();
 		}
 	}
 

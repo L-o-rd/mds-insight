@@ -93,6 +93,22 @@ public class Bitmap {
 		}
 	}
 	
+	public void blitScale(Bitmap other, int scale, int xoff, int yoff, int xo, int yo, int w, int h, int col) {
+		final int hx = h * scale;
+		final int wx = w * scale;
+		for(int y = 0; y < hx; ++y) {
+			int starty = yoff + y;
+			if(starty < 0 || starty >= height) continue;
+			for(int x = 0; x < wx; ++x) {
+				int startx = xoff + x;
+				if(startx < 0 || startx >= width) continue;
+				
+				int pix = other.pixels[(x / scale + xo) + (y / scale + yo) * other.width];
+				if(pix != key) pixels[startx + starty * width] = pix & col;
+			}
+		}
+	}
+	
 	public void blit(Bitmap other, int xo, int yo, int color) {
 		for(int y = 0; y < other.height; ++y) {
 			int starty = yo + y;
