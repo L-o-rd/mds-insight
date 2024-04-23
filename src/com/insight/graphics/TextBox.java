@@ -53,6 +53,7 @@ public class TextBox {
 			if(input.keys[KeyEvent.VK_BACK_SPACE]) {
 				if(!this.sb.isEmpty()) {
 					this.sb.deleteCharAt(sb.length() - 1);
+					input.lastChar = '\b';
 				}
 				
 				input.keys[KeyEvent.VK_BACK_SPACE] = false;
