@@ -22,4 +22,13 @@ public final class Font {
 			screen.blit(Art.font, x + i * CHAR_WIDTH, y, px * CHAR_WIDTH, py * CHAR_HEIGHT, CHAR_WIDTH, CHAR_HEIGHT, color);
 		}
 	}
+	
+	public static void write(Screen screen, final String msg, int x, int y, int color, int scale) {
+		for(int i = 0; i < msg.length(); ++i) {
+			int chr = CHARSET.indexOf(msg.charAt(i));
+			if(chr < 0) continue;
+			int px = chr % CHARS_PER_LINE, py = chr / CHAR_ROWS;
+			screen.blitScale(Art.font, scale, x + i * CHAR_WIDTH * scale, y, px * CHAR_WIDTH, py * CHAR_HEIGHT, CHAR_WIDTH, CHAR_HEIGHT, color);
+		}
+	}
 }

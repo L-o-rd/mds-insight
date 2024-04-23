@@ -1,6 +1,7 @@
 package com.insight.graphics;
 
 import java.awt.event.KeyEvent;
+import java.util.List;
 
 import com.insight.Content;
 import com.insight.Input;
@@ -58,13 +59,17 @@ public class TextBox {
 				return;
 			} else {
 				if(this.sb.length() >= this.limit) return;
-				for(int i = 0; i < input.keys.length; ++i) {
+				if(input.lastChar == '\b') return;
+				this.sb.append(input.lastChar);
+				input.lastChar = '\b';
+				/* for(int i = 0; i < input.keys.length; ++i) {
+					if(forbidden.contains(i)) continue;
 					if(input.keys[i]) {
 						this.sb.append((char)i);
 						input.keys[i] = false;
 						break;
 					}
-				}
+				} */
 			}
 		} else {
 			if(input.keys[KeyEvent.VK_ENTER]) {

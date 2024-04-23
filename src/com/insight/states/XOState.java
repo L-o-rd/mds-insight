@@ -23,7 +23,7 @@ public class XOState extends State {
 			O("./res/xo/o.png") {
 				@Override
 				public XOT next() {
-					return Empty;
+					return X;
 				}
 			}, 
 			
@@ -40,8 +40,8 @@ public class XOState extends State {
 				this.img = Art.load(path);
 			}
 			
-			public void render(Screen screen, final int x, final int y) {
-				screen.blit(this.img, x, y);
+			public void render(Screen screen, final int x, final int y, final int color) {
+				screen.blit(this.img, x, y, color);
 			}
 			
 			public abstract XOT next();
@@ -53,13 +53,14 @@ public class XOState extends State {
 			this.type = XOT.Empty;
 		}
 		
-		public void render(Screen screen, int x, int y) {
-			this.type.render(screen, x, y);
+		public void render(Screen screen, int x, int y, int turn) {
+			this.type.render(screen, x, y, turn == 1 ? 0 : 0xffffff);
 		}
 	}
 	
+	private int xback = 0, xturn = 0;
 	private final XOCell[] board;
-	private int xback = 0;
+	private XOCell.XOT turn;
 	private Button back;
 
 	public XOState(Game game) {
@@ -76,6 +77,8 @@ public class XOState extends State {
 				game.setState(State.MINIGAMES_STATE);
 			}
 		};
+		
+		this.turn = XOCell.XOT.X;
 	}
 	
 	final int w = 10, s = 25;
@@ -90,7 +93,7 @@ public class XOState extends State {
 		int posy = (screen.height >> 1) - ((w + s) * 3) / 2;
 		for(int i = 0; i < 3; ++i) {
 			for(int j = 0; j < 3; ++j) {
-				this.board[j + i * 3].render(screen, posx + j * (w + s), posy + i * (w + s));
+				this.board[j + i * 3].render(screen, posx + j * (w + s), posy + i * (w + s), this.xturn);
 			}
 		}
 		
@@ -108,7 +111,9 @@ public class XOState extends State {
 				if(input.mx >= x && input.mx <= (x + 32) &&
 						input.my >= y && input.my <= (y + 32)) {
 					if(input.mouse[0]) {
-						this.board[j + i * 3].type = this.board[j + i * 3].type.next();
+						this.board[j + i * 3].type = this.turn;
+						this.xturn = (this.xturn + 1) % 2;
+						this.turn = this.turn.next();
 						input.mouse[0] = false;
 					}
 				}
