@@ -19,7 +19,6 @@ public class MenuState extends State {
 	private double fadein = 0, fadedir = 0.025;
 	private boolean animation, waiting;
 	private int xback = 0, lx = 0;
-	
 	private final Button create, games, join, exit;
 
 	public MenuState(final Game game) {
@@ -120,5 +119,4 @@ public class MenuState extends State {
 			exit.update(input);
 		}
 	}
-
 }

@@ -29,7 +29,9 @@ public class MinigamesState extends State {
 		
 		this.thousand = new SmallButton(((Content.WIDTH - SmallButton.width()) >> 1), ((Content.HEIGHT - SmallButton.height()) >> 1), "2048") {
 			@Override
-			public void clicked() {}
+			public void clicked() {
+				game.setState(STATE_2048);
+			}
 		};
 		
 		this.pong = new SmallButton(((Content.WIDTH - SmallButton.width()) >> 1), (Content.HEIGHT >> 1) + (SmallButton.height() / 2) + 10, "Pong") {
