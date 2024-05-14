@@ -8,9 +8,7 @@ import com.insight.graphics.*;
 import com.insight.graphics.Button;
 import com.insight.graphics.Font;
 
-import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.util.Objects;
 import java.util.Random;
 
 public class State2048 extends State {
@@ -65,6 +63,7 @@ public class State2048 extends State {
 
         boardNumbers[valueCoords[0]][valueCoords[1]] = value;
     }
+    
     public State2048(Game game) {
         super(game);
 
@@ -74,7 +73,19 @@ public class State2048 extends State {
         }
 
         this.boardNumbers = new int[4][4];
-        // Initialize the board with 0s (empty cells)
+        this.resetBoard();
+
+        this.back = new SmallButton((Content.WIDTH - SmallButton.width()) >> 1, Content.HEIGHT - 10 - SmallButton.height(), "Back") {
+            @Override
+            public void clicked() {
+            	resetBoard();
+                game.setState(State.MINIGAMES_STATE);
+            }
+        };
+    }
+    
+    private void resetBoard() {
+    	// Initialize the board with 0s (empty cells)
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
                 this.boardNumbers[i][j] = 0;
@@ -85,13 +96,7 @@ public class State2048 extends State {
         addValue();
 
         this.score = 0;
-
-        this.back = new SmallButton((Content.WIDTH - SmallButton.width()) >> 1, Content.HEIGHT - 10 - SmallButton.height(), "Back") {
-            @Override
-            public void clicked() {
-                game.setState(State.MINIGAMES_STATE);
-            }
-        };
+        this.gameOver = false;
     }
 
     public int[] generatePositionForNumber() {
@@ -384,12 +389,11 @@ public class State2048 extends State {
         //is over.
         if(!this.canMoveLeft()&&!this.canMoveRight()&&!this.canMoveUp()
                 &&!this.canMoveDown()) {
-            gameOver = true;
-            return true;
+            return gameOver = true;
         }
 
         //return false when the game continues
-        return false;
+        return gameOver = false;
     }
 
     final int w = 10, s = 25;
@@ -461,10 +465,10 @@ public class State2048 extends State {
 
         if (gameOver) {
             screen.fill(0, 0, screen.width, screen.height, 0xf6c858);
-            String msgGameOver = "Game Over!";
-            String msgScore = "Score: " + score;
-            Font.write(screen, msgGameOver, ((screen.width - 19 * Font.CHAR_WIDTH) >> 1) + 1, 11, 0x7f8f7f);
-            Font.write(screen, msgScore, ((screen.width - msgScore.length() * Font.CHAR_WIDTH * 2) >> 1) - 1, ((screen.height - 65) >> 1) + 2, 0x7f8f7f);
+            final String msgGameOver = "Game Over!";
+            final String msgScore = "Score: " + score;
+            Font.write(screen, msgGameOver, ((screen.width - (msgGameOver.length()) * Font.CHAR_WIDTH) >> 1), ((screen.height - 39) >> 1), 0x8fffff);
+            Font.write(screen, msgScore, ((screen.width - msgScore.length() * Font.CHAR_WIDTH) >> 1), ((screen.height - 9) >> 1), 0xff7fff);
         } else {
             int posx = (screen.width >> 1) - ((w + s) * BOARD_SIZE) / 2;
             int posy = (screen.height >> 1) - ((w + s) * BOARD_SIZE) / 2 - 10;
@@ -494,9 +498,10 @@ public class State2048 extends State {
                         Font.write(screen, String.valueOf(tileValue), textX, textY, valueColor);
                     }
                 }
-            }
-            this.back.render(screen, game.input);
+            }    
         }
+        
+        this.back.render(screen, game.input);
     }
 
     // Define a flag to track if the arrow key was just pressed
