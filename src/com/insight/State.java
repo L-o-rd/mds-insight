@@ -10,6 +10,7 @@ public abstract class State {
 	public static final int ROOM_STATE = 4;
 	public static final int XO_STATE = 5;
 	public static final int PREPARE_STATE = 6;
+	public static final int STATE_2048 = 7;
 	
 	protected Game game;
 	
