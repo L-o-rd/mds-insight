@@ -3,8 +3,8 @@ package com.insight;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.insight.graphics.Screen;
 import com.insight.states.*;
+import com.insight.graphics.Screen;
 
 public class Game {
 	private List<State> states;
@@ -20,8 +20,8 @@ public class Game {
 		this.states.add(new MinigamesState(this));
 		this.states.add(new RoomState(this));
 		this.states.add(new XOState(this));
-		this.states.add(new State2048(this));
 		this.states.add(new PrepareState(this));
+		this.states.add(new State2048(this));
 		this.current = State.MENU_STATE;
 		this.input = input;
 	}
