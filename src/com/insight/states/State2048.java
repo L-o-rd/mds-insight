@@ -63,7 +63,7 @@ public class State2048 extends State {
 
         boardNumbers[valueCoords[0]][valueCoords[1]] = value;
     }
-    
+
     public State2048(Game game) {
         super(game);
 
@@ -78,14 +78,14 @@ public class State2048 extends State {
         this.back = new SmallButton((Content.WIDTH - SmallButton.width()) >> 1, Content.HEIGHT - 10 - SmallButton.height(), "Back") {
             @Override
             public void clicked() {
-            	resetBoard();
+                resetBoard();
                 game.setState(State.MINIGAMES_STATE);
             }
         };
     }
-    
+
     private void resetBoard() {
-    	// Initialize the board with 0s (empty cells)
+        // Initialize the board with 0s (empty cells)
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
                 this.boardNumbers[i][j] = 0;
@@ -498,9 +498,9 @@ public class State2048 extends State {
                         Font.write(screen, String.valueOf(tileValue), textX, textY, valueColor);
                     }
                 }
-            }    
+            }
         }
-        
+
         this.back.render(screen, game.input);
     }
 
