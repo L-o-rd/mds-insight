@@ -9,9 +9,9 @@ import com.insight.graphics.Screen;
 public class Game {
 	private List<State> states;
 	private int current;
-
+	
 	public final Input input;
-
+	
 	public Game(final Input input) {
 		this.states = new ArrayList<>();
 		this.states.add(new MenuState(this));
@@ -26,19 +26,23 @@ public class Game {
 		this.current = State.MENU_STATE;
 		this.input = input;
 	}
-
+	
+	public State getState(final int state) {
+		return this.states.get(state);
+	}
+	
 	public final State getState() {
 		return this.states.get(current);
 	}
-
+	
 	public void setState(final int state) {
 		this.current = state;
 	}
-
+	
 	public void render(Screen screen) {
 		this.states.get(current).render(screen);
 	}
-
+	
 	public void update() {
 		this.states.get(current).update(this.input);
 	}

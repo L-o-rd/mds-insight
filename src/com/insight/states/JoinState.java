@@ -2,17 +2,13 @@ package com.insight.states;
 
 import com.insight.graphics.*;
 import com.insight.Content;
+import com.insight.Database;
 import com.insight.Input;
 import com.insight.State;
 import com.insight.Game;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-
 public class JoinState extends State {
-	private boolean codeFound, wasClicked;
+	private boolean codeFound, wasClicked, joinable;
 	private String inputText;
 	private Button submit;
 	private Button back;
@@ -27,12 +23,11 @@ public class JoinState extends State {
 		this.submit = new BigButton((Content.WIDTH - BigButton.width()) >> 1, ((Content.HEIGHT + SmallButton.height()) >> 1) + 10, "Submit") {
 			@Override
 			public void clicked() {
-				// Set the input text to the variable when the submit button is clicked
 				inputText = box.getInputText();
-				verifyInputFile(inputText);
+				codeFound = Database.get().searchRoom(inputText);
 				wasClicked = true;
-
-				if (codeFound) {
+				joinable = Database.get().roomJoinable(inputText);
+				if (codeFound && joinable) {
 					game.setState(ROOM_STATE);
 				}
 			}
@@ -46,26 +41,9 @@ public class JoinState extends State {
 			}
 		};
 	}
-
-	private void verifyInputFile(String inputCode) {
-		this.codeFound = false;
-		try {
-			BufferedReader bufferedReader = new BufferedReader(
-				new FileReader(new File(CreateState.ID_FILE_PATH))
-			);
-
-			String code;
-			while ((code = bufferedReader.readLine()) != null) {
-				if (code.equalsIgnoreCase(inputCode)) {
-					codeFound = true;
-					break;
-				}
-			}
-
-			bufferedReader.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	
+	public String getID() {
+		return inputText;
 	}
 
 	@Override
@@ -74,6 +52,9 @@ public class JoinState extends State {
 
 		if (wasClicked && !codeFound) {
 			final String msg = "Join code '" + inputText + "' is not valid!";
+			Font.write(screen, msg, (screen.width - msg.length() * Font.CHAR_WIDTH) >> 1, Font.CHAR_HEIGHT * 6, 0);
+		} else if (wasClicked && !joinable) {
+			final String msg = "Room '" + inputText + "' is not open yet!";
 			Font.write(screen, msg, (screen.width - msg.length() * Font.CHAR_WIDTH) >> 1, Font.CHAR_HEIGHT * 6, 0);
 		}
 

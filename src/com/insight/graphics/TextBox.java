@@ -1,8 +1,6 @@
 package com.insight.graphics;
 
 import java.awt.event.KeyEvent;
-import java.util.List;
-
 import com.insight.Content;
 import com.insight.Input;
 
@@ -23,16 +21,24 @@ public class TextBox {
 		this.y = y;
 	}
 	
+	public void clear() {
+		this.selected = false;
+		this.sb.delete(0, this.sb.length());
+	}
+	
 	public void render(Screen screen, Input input) {
 		screen.fill(x - BORDER_SIZE, y - BORDER_SIZE, width + 2 * BORDER_SIZE, height + 2 * BORDER_SIZE, 0x7f7f7f);
 		
 		if(this.selected) {
+			int curx = sb.length() >= this.limit ? x + 2 + this.limit * Font.CHAR_WIDTH : x + 2 + sb.length() * Font.CHAR_WIDTH;
 			screen.fill(x, y, width, height, 0x9f9f9f);
+			screen.fill(curx, y + (height - Font.CHAR_HEIGHT) / 2, 1, Font.CHAR_HEIGHT, 0);
 		} else {
 			screen.fill(x, y, width, height, 0xefefef);
 		}
 		
-		Font.write(screen, sb.toString(), x + 2, y + (height - Font.CHAR_HEIGHT) / 2, 0);
+		final String msg = sb.length() >= this.limit ? sb.toString().substring(sb.length() - this.limit) : sb.toString();
+		Font.write(screen, msg, x + 2, y + (height - Font.CHAR_HEIGHT) / 2, 0);
 	}
 	
 	public void update(Input input) {
@@ -59,7 +65,6 @@ public class TextBox {
 				input.keys[KeyEvent.VK_BACK_SPACE] = false;
 				return;
 			} else {
-				if(this.sb.length() >= this.limit) return;
 				if(input.lastChar == '\b') return;
 				this.sb.append(input.lastChar);
 				input.lastChar = '\b';

@@ -5,10 +5,6 @@ import java.util.Arrays;
 public class Bitmap {
 	public final int width, height, pixels[];
 	public static final int key = 0xff8112a0;
-
-	// colors
-	// #8112A0 -> transparent
-	// #EFF8C9 -> box border
 	
 	public Bitmap(final int width, final int height, final int[] pixels) {
 		this.width = width; this.height = height;
