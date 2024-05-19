@@ -31,4 +31,18 @@ public final class Font {
 			screen.blitScale(Art.font, scale, x + i * CHAR_WIDTH * scale, y, px * CHAR_WIDTH, py * CHAR_HEIGHT, CHAR_WIDTH, CHAR_HEIGHT, color);
 		}
 	}
+	
+	public static void write(Screen screen, final Character c, int x, int y, int color) {
+		int chr = CHARSET.indexOf(c);
+		if(chr < 0) return;
+		int px = chr % CHARS_PER_LINE, py = chr / CHAR_ROWS;
+		screen.blit(Art.font, x, y, px * CHAR_WIDTH, py * CHAR_HEIGHT, CHAR_WIDTH, CHAR_HEIGHT, color);
+	}
+	
+	public static void write(Screen screen, final Character c, int x, int y, int color, int scale) {
+		int chr = CHARSET.indexOf(c);
+		if(chr < 0) return;
+		int px = chr % CHARS_PER_LINE, py = chr / CHAR_ROWS;
+		screen.blitScale(Art.font, scale, x, y, px * CHAR_WIDTH, py * CHAR_HEIGHT, CHAR_WIDTH, CHAR_HEIGHT, color);
+	}
 }
