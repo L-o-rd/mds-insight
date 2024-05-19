@@ -87,7 +87,7 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener {
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		if(e.getButton() == MouseEvent.BUTTON1) mouse[0] = false;
-		else if(e.getButton() == MouseEvent.BUTTON3) mouse[1] = true;
+		else if(e.getButton() == MouseEvent.BUTTON3) mouse[1] = false;
 	}
 
 	@Override
