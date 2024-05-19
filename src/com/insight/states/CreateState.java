@@ -35,6 +35,8 @@ public class CreateState extends State {
 		this.back = new SmallButton((Content.WIDTH >> 1) + 5, Content.HEIGHT - 10 - SmallButton.height(), "Back") {
 			@Override
 			public void clicked() {
+				uniqueId = null;
+				idGenerated = false;
 				game.setState(MENU_STATE);
 			}
 		};
