@@ -12,7 +12,10 @@ import java.util.Random;
 public class MinesweeperState extends State {
     private class MineTile {
         public enum Cell {
-            Empty("./res/minesweeper/e.png");
+            Empty("./res/minesweeper/e.png"),
+            Flag("./res/minesweeper/flag.png"),
+            Bomb("./res/minesweeper/bomb.png"),
+            Revealed("./res/minesweeper/empty.png");
 
             private final Bitmap img;
 
@@ -26,33 +29,23 @@ public class MinesweeperState extends State {
         }
 
         public Cell type;
-        public int r, c;
+        public int nbombs;
         public boolean flagged;
         public boolean revealed;
 
-        public MineTile(int r, int c) {
-            this.r = r;
-            this.c = c;
+        public MineTile() {
             this.type = Cell.Empty;
             this.flagged = false;
             this.revealed = false;
+            this.nbombs = 0;
         }
 
         public void render(Screen screen, int x, int y) {
             this.type.render(screen, x, y);
-            if (this.flagged) {
-                // Render flag image
-                screen.blit(Art.load("./res/minesweeper/flag.png"), x, y);
-            }
-            if (this.revealed && mineList.contains(this)) {
-                // Render mine image
-                screen.blit(Art.load("./res/minesweeper/bomb.png"), x, y);
-            } else if (this.revealed) {
-                // Render number of adjacent mines
-                screen.blit(Art.load("./res/minesweeper/empty.png"), x, y);
-                int minesFound = countAdjacentMines(r, c);
-                if (minesFound > 0) {
-                    Font.write(screen, String.valueOf(minesFound), x + 8 , y + 8, 0xff0000);
+            
+            if (this.revealed) {
+                if (this.nbombs > 0) {
+                    Font.write(screen, String.valueOf(this.nbombs), x + 8 , y + 8, 0xff0000);
                 }
             }
         }
@@ -65,7 +58,6 @@ public class MinesweeperState extends State {
     private static final int MINE_COUNT = 9;
     private static final int TILE_SIZE = 20;
     private final MineTile[] board;
-    private final MineTile[][] boardGrid;
     private final ArrayList<MineTile> mineList;
     private int tilesClicked;
     private boolean gameOver, win;
@@ -75,7 +67,6 @@ public class MinesweeperState extends State {
         super(game);
 
         this.board = new MineTile[BOARD_SIZE * BOARD_SIZE];
-        this.boardGrid = new MineTile[BOARD_SIZE][BOARD_SIZE];
         this.mineList = new ArrayList<>();
         this.tilesClicked = 0;
         this.gameOver = false;
@@ -83,9 +74,8 @@ public class MinesweeperState extends State {
 
         for (int r = 0; r < BOARD_SIZE; r++) {
             for (int c = 0; c < BOARD_SIZE; c++) {
-                MineTile tile = new MineTile(r, c);
+                MineTile tile = new MineTile();
                 this.board[r * BOARD_SIZE + c] = tile;
-                this.boardGrid[r][c] = tile;
             }
         }
 
@@ -106,7 +96,7 @@ public class MinesweeperState extends State {
         while (minesLeft > 0) {
             int r = random.nextInt(BOARD_SIZE);
             int c = random.nextInt(BOARD_SIZE);
-            MineTile tile = boardGrid[r][c];
+            MineTile tile = board[r * BOARD_SIZE + c];
             if (!mineList.contains(tile)) {
                 mineList.add(tile);
                 minesLeft--;
@@ -117,21 +107,25 @@ public class MinesweeperState extends State {
     private void resetBoard() {
         for (int r = 0; r < BOARD_SIZE; r++) {
             for (int c = 0; c < BOARD_SIZE; c++) {
-                MineTile tile = boardGrid[r][c];
+                MineTile tile = board[r * BOARD_SIZE + c];
+                tile.type = MineTile.Cell.Empty;
                 tile.revealed = false;
                 tile.flagged = false;
             }
         }
+        
         mineList.clear();
         setMines();
         tilesClicked = 0;
         gameOver = false;
+        win = false;
     }
 
     private void revealMines() {
         for (MineTile tile : mineList) {
-            tile.revealed = true;
+        	tile.type = MineTile.Cell.Bomb;
         }
+        
         gameOver = true;
     }
 
@@ -140,15 +134,18 @@ public class MinesweeperState extends State {
             return;
         }
 
-        MineTile tile = boardGrid[r][c];
+        MineTile tile = board[r * BOARD_SIZE + c];
         if (tile.revealed || tile.flagged) {
             return;
         }
 
         tile.revealed = true;
+        tile.type = MineTile.Cell.Revealed;
+        tile.nbombs = countAdjacentMines(r, c);
         tilesClicked++;
 
         if (mineList.contains(tile)) {
+        	tile.revealed = false;
             revealMines();
             return;
         }
@@ -194,7 +191,8 @@ public class MinesweeperState extends State {
         if (r < 0 || r >= BOARD_SIZE || c < 0 || c >= BOARD_SIZE) {
             return 0;
         }
-        return mineList.contains(boardGrid[r][c]) ? 1 : 0;
+        
+        return mineList.contains(board[r * BOARD_SIZE + c]) ? 1 : 0;
     }
 
     @Override
@@ -202,12 +200,12 @@ public class MinesweeperState extends State {
         screen.fill(0, 0, screen.width, screen.height, 0xf6c858);
         screen.blitWrap(Art.back, xback * 1, 0);
         screen.blitWrap(Art.back, 30 + xback + Art.back.width, 0); ++xback;
-        int posx = (320>> 1) - (BOARD_SIZE * TILE_SIZE / 2);
+        int posx = (320 >> 1) - (BOARD_SIZE * TILE_SIZE / 2);
         int posy = (180 >> 1) - (BOARD_SIZE * TILE_SIZE / 2) + 5;
 
         for (int r = 0; r < BOARD_SIZE; r++) {
             for (int c = 0; c < BOARD_SIZE; c++) {
-                MineTile tile = boardGrid[r][c];
+                MineTile tile = board[r * BOARD_SIZE + c];
                 tile.render(screen, posx + c * TILE_SIZE, posy + r * TILE_SIZE - SmallButton.height());
             }
         }
@@ -233,50 +231,32 @@ public class MinesweeperState extends State {
 
     @Override
     public void update(Input input) {
-
         this.back.update(input);
+        
+        if(!gameOver) {
+            final int wd = BOARD_SIZE * TILE_SIZE;
+        	final int sx = (Content.WIDTH - wd) >> 1;
+        	final int sy = ((Content.HEIGHT - wd) >> 1) + 5 - SmallButton.height();
+            
+            if((input.mx >= sx && input.mx <= (sx + wd)) &&
+            		(input.my >= sy && input.my <= (sy + wd))) {
 
-        if(gameOver==false){
-            // Check if the left mouse button is pressed
-            if (input.mouse[0]) {
-                int mouseX = (int) input.mx;
-                int mouseY = (int) input.my;
-                int posx = (320 >> 1) - (BOARD_SIZE * TILE_SIZE / 2);
-                int posy = (180 >> 1) - (BOARD_SIZE * TILE_SIZE / 2) + 5;
-
-                for (int r = 0; r < BOARD_SIZE; r++) {
-                    for (int c = 0; c < BOARD_SIZE; c++) {
-                        MineTile tile = boardGrid[r][c];
-                        int tileX = posx + c * TILE_SIZE;
-                        int tileY = posy + r * TILE_SIZE - SmallButton.height();
-
-                        if (mouseX >= tileX && mouseX <= tileX + TILE_SIZE && mouseY >= tileY && mouseY <= tileY + TILE_SIZE) {
-                            checkMine(r, c);
-                        }
+        		final int tx = (int) ((input.mx - sx) / TILE_SIZE);
+            	final int ty = (int) ((input.my - sy) / TILE_SIZE);
+            	
+            	if(input.mouse[0]) {
+            		checkMine(ty, tx);
+            		input.mouse[0] = false;
+            	} else if(input.mouse[1]) {
+            		var tile = this.board[ty * BOARD_SIZE + tx];
+            		
+            		if (!tile.revealed) {
+                        tile.flagged = !tile.flagged;
+                        tile.type = tile.flagged ? MineTile.Cell.Flag : MineTile.Cell.Empty;
                     }
-                }
-            }
-
-            // Check if the right mouse button is pressed
-            if (input.mouse[1]) {
-                int mouseX = (int) input.mx;
-                int mouseY = (int) input.my;
-                int posx = (320 >> 1) - (BOARD_SIZE * TILE_SIZE / 2);
-                int posy = (180 >> 1) - (BOARD_SIZE * TILE_SIZE / 2) + 5;
-
-                for (int r = 0; r < BOARD_SIZE; r++) {
-                    for (int c = 0; c < BOARD_SIZE; c++) {
-                        MineTile tile = boardGrid[r][c];
-                        int tileX = posx + c * TILE_SIZE;
-                        int tileY =  posy + r * TILE_SIZE - SmallButton.height();
-
-                        if (mouseX >= tileX && mouseX <= tileX + TILE_SIZE && mouseY >= tileY && mouseY <= tileY + TILE_SIZE) {
-                            if (!tile.revealed) {
-                                tile.flagged = !tile.flagged;
-                            }
-                        }
-                    }
-                }
+            		
+            		input.mouse[1] = false;
+            	}
             }
         }
     }
