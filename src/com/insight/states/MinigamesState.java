@@ -13,41 +13,38 @@ import com.insight.graphics.SmallButton;
 public class MinigamesState extends State {
 	private static final Bitmap logo = Art.load("./res/minigames.png");
 	
-	private Button xo, thousand, pong, minesweeper, back;
+	private Button xo, thousand, minesweeper, back;
 	private int xback = 0, lx = 0;
 	private double fadein = 0.0;
 	
 	public MinigamesState(Game game) {
 		super(game);
 		
-		this.xo = new SmallButton(((Content.WIDTH - SmallButton.width()) >> 1), (Content.HEIGHT >> 1) - ((SmallButton.height() * 3) / 2 + 10) - 5, "X & O") {
+		this.xo = new SmallButton(((Content.WIDTH - SmallButton.width()) >> 1), (Content.HEIGHT >> 1) - ((SmallButton.height() * 3) / 2 + 10), "X & O") {
 			@Override
 			public void clicked() {
 				game.setState(XO_STATE);
 			}
 		};
 		
-		this.thousand = new SmallButton(((Content.WIDTH - SmallButton.width()) >> 1), ((Content.HEIGHT - SmallButton.height()) >> 1) - 10, "2048") {
+		this.thousand = new SmallButton(((Content.WIDTH - SmallButton.width()) >> 1), ((Content.HEIGHT - SmallButton.height()) >> 1), "2048") {
 			@Override
 			public void clicked() {
 				game.setState(STATE_2048);
 			}
 		};
 		
-		this.pong = new SmallButton(((Content.WIDTH - SmallButton.width()) >> 1), (Content.HEIGHT >> 1) + (SmallButton.height() / 2) , "Pong") {
+		this.minesweeper = new SmallButton(((Content.WIDTH - SmallButton.width()) >> 1), (Content.HEIGHT >> 1) + (SmallButton.height() / 2) + 10, "Mines") {
 			@Override
-			public void clicked() {}
-		};
-
-		this.minesweeper = new SmallButton(((Content.WIDTH - SmallButton.width()) >> 1), (Content.HEIGHT >> 1) + (SmallButton.height() / 2) + 25, "Mines") {
-			@Override
-			public void clicked() {game.setState(MINESWEEPER_STATE);}
+			public void clicked() {
+				game.setState(MINESWEEPER_STATE);
+			}
 		};
 		
 		this.back = new SmallButton((Content.WIDTH - SmallButton.width()) >> 1, Content.HEIGHT - 10 - SmallButton.height(), "Back") {
 			@Override
 			public void clicked() {
-				game.setState(State.MENU_STATE);
+				game.setState(MENU_STATE);
 			}
 		};
 	}
@@ -64,7 +61,6 @@ public class MinigamesState extends State {
 		
 		this.thousand.render(screen, game.input);
 		this.back.render(screen, game.input);
-		this.pong.render(screen, game.input);
 		this.minesweeper.render(screen, game.input);
 		this.xo.render(screen, game.input);
 	}
@@ -73,7 +69,6 @@ public class MinigamesState extends State {
 	public void update(Input input) {
 		this.thousand.update(input);
 		this.back.update(input);
-		this.pong.update(input);
 		this.minesweeper.update(input);
 		this.xo.update(input);
 	}
