@@ -1,21 +1,16 @@
 package com.insight.states;
 
 import com.insight.Content;
+import com.insight.Database;
 import com.insight.Game;
 import com.insight.Input;
 import com.insight.State;
 import com.insight.graphics.*;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 public class CreateState extends State {
-
-	public static final String ID_FILE_PATH = "./res/ids.db";
 	private boolean idGenerated = false;
 	private Button generateCode;
 	private Button back, next;
@@ -45,67 +40,34 @@ public class CreateState extends State {
 			@Override
 			public void clicked() {
 				idGenerated = true;
-				verifyDatabase(ID_FILE_PATH);
 				uniqueId = generateUniqueId();
 			}
 		};
 	}
 	
-	private void verifyDatabase(final String path) {
-		if (!fileExists(ID_FILE_PATH)) {
-			var file = new File(ID_FILE_PATH);
-			try {
-				file.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+	public String getID() {
+		return this.uniqueId;
 	}
+	
+	private static final String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 	public static String generateUniqueId() {
-		final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		Random random = new Random();
 		String Id;
 
-		Set<String> existingIds = loadExistingIds();
+		List<String> existingIds = Database.get().getRoomsIDs();
 		do {
 			StringBuffer sb = new StringBuffer(6);
-			for ( int i = 0; i <= 5; i++)
+			for (int i = 0; i < 6; i++)
 			{
 				sb.append(chars.charAt(random.nextInt(chars.length())));
 			}
 			
 			Id = sb.toString();
 		} while(existingIds.contains(Id));
-		saveIdInFile (Id);
-		return Id;
-	}
-
-	private static Set<String> loadExistingIds() {
-		Set<String> existingIds = new HashSet<>();
-		if (fileExists(ID_FILE_PATH)) {
-			try(BufferedReader reader = new BufferedReader(new FileReader(ID_FILE_PATH))) {
-				String line;
-				while ((line = reader.readLine()) != null) {
-					existingIds.add(line.trim().strip());
-				}
-			} catch (IOException e) {
-				System.err.println("error: loadExistingIds - " + e.getMessage());
-			} 
-		}
 		
-		return existingIds;
-	}
-
-	private static void saveIdInFile (String id) {
-		if (fileExists(ID_FILE_PATH)) {
-			try (BufferedWriter writer = new BufferedWriter(new FileWriter(ID_FILE_PATH, true))) {
-				writer.write(id);
-				writer.newLine();
-			} catch (IOException e) {
-				System.err.println("error writing the file:" + e.getMessage());
-			}
-		}
+		Database.get().createRoom(Id);
+		return Id;
 	}
 
 	@Override
@@ -127,10 +89,6 @@ public class CreateState extends State {
 		this.back.update(input);
 		this.next.update(input);
 		this.generateCode.update(input);
-	}
-
-	private static boolean fileExists(String ID_FILE_PATH) {
-		return Files.exists(Paths.get(ID_FILE_PATH));
 	}
 
 }
