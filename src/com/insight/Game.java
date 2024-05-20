@@ -22,6 +22,7 @@ public class Game {
 		this.states.add(new XOState(this));
 		this.states.add(new PrepareState(this));
 		this.states.add(new State2048(this));
+		this.states.add(new StatePong(this));
 		this.current = State.MENU_STATE;
 		this.input = input;
 	}

@@ -36,7 +36,7 @@ public class MinigamesState extends State {
 		
 		this.pong = new SmallButton(((Content.WIDTH - SmallButton.width()) >> 1), (Content.HEIGHT >> 1) + (SmallButton.height() / 2) + 10, "Pong") {
 			@Override
-			public void clicked() {}
+			public void clicked() {game.setState(STATE_PONG);}
 		};
 		
 		this.back = new SmallButton((Content.WIDTH - SmallButton.width()) >> 1, Content.HEIGHT - 10 - SmallButton.height(), "Back") {
@@ -61,6 +61,7 @@ public class MinigamesState extends State {
 		this.back.render(screen, game.input);
 		this.pong.render(screen, game.input);
 		this.xo.render(screen, game.input);
+
 	}
 
 	@Override
