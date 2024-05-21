@@ -22,6 +22,44 @@ public final class Database {
             e.printStackTrace();
         }
 	}
+
+	public int getPlace(final String place) {
+		try {
+			var stmt = this.connection.createStatement();
+			var rset = stmt.executeQuery("select state from xo where pname = " + place);
+			rset.next();
+			return rset.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return 0;
+	}
+	
+	public void setPlace(final String place, final int st) {
+		try {
+			var stmt = this.connection.prepareStatement("update xo set state = ? where pname = ?");
+			stmt.setInt(1, st);
+			stmt.setString(2, place);
+			stmt.executeUpdate("");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public int getTurn() {
+		try {
+			var stmt = this.connection.prepareStatement("select state from xo where pname = ?");
+			stmt.setString(1, "turn");
+			var rset = stmt.executeQuery();
+			rset.next();
+			return rset.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return 0;
+	}
 	
 	public void removeQuestions(final String id) {
 		if(id == null) return;
