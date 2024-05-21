@@ -131,8 +131,11 @@ public class XOState extends State {
 	private int moves = 0;
 
 	private void place(final int j, final int i, final XOCell.XOT type) {
-		if(this.board[j + i * 3].type == XOCell.XOT.Empty) {
+		var place = Database.get().getPlace("p" + j + i);
+		
+		if(place == 0) {
 			this.board[j + i * 3].type = this.turn;
+			Database.get().setPlace("p" + j + i, 1);
 			this.xturn = (this.xturn + 1) % 2;
 			this.turn = this.turn.next();
 			++moves;
@@ -193,27 +196,37 @@ public class XOState extends State {
 		}
 	}
 		
+	private long waitForTurn = 0;
+	
 	@Override
 	public void update(Input input) {
 		this.back.update(input);
 		
+		final long elapsed = System.currentTimeMillis() - waitForTurn;
+		if(elapsed >= 500) {
+			waitForTurn = System.currentTimeMillis();
+			xturn = Database.get().getTurn();
+		}
+		
 		if(!over) {
-			if(input.mouse[0]) {
-				int posx = (Content.WIDTH >> 1) - ((w + s) * 3) / 2;
-				int posy = (Content.HEIGHT >> 1) - ((w + s) * 3) / 2;
-				
-				for(int i = 0; i < 3; ++i) {
-					final int y = posy + i * (w + s);
-					for(int j = 0; j < 3; ++j) {
-						final int x = posx + j * (w + s);
-						if(input.mx >= x && input.mx <= (x + 32) &&
-								input.my >= y && input.my <= (y + 32)) {
-							this.place(j, i, turn);
+			if(xturn == 0) {
+				if(input.mouse[0]) {
+					int posx = (Content.WIDTH >> 1) - ((w + s) * 3) / 2;
+					int posy = (Content.HEIGHT >> 1) - ((w + s) * 3) / 2;
+					
+					for(int i = 0; i < 3; ++i) {
+						final int y = posy + i * (w + s);
+						for(int j = 0; j < 3; ++j) {
+							final int x = posx + j * (w + s);
+							if(input.mx >= x && input.mx <= (x + 32) &&
+									input.my >= y && input.my <= (y + 32)) {
+								this.place(j, i, turn);
+							}
 						}
 					}
+					
+					input.mouse[0] = false;
 				}
-				
-				input.mouse[0] = false;
 			}
 		}
 	}
