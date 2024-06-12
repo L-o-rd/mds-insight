@@ -10,13 +10,16 @@ Aplicatia are doua sectiuni, cea de minigames si cea de joc multiplayer. In sect
 ![Untitled](https://github.com/L-o-rd/mds-insight/assets/116594293/42bc25ac-7d42-4a98-98e1-8caed9806d0f)
 
 ##Source control
-Proiectul se afla in totalitate pe github, fiind impartit in res, pentru partea de frontend, si src/com.insight care contine partea de backend.
+Proiectul se afla in totalitate pe github, fiind impartit in res, pentru partea de resurse, si src/com.insight care contine sursele pentru frontend/backend.
 
 ##Raportare bug 
 
 ##Comentarii cod
 
 ##Design pattern
-A fost folosit Singleton, pentru conexiunea cu baza de date (Mysql), in clasa Database.
+Am fost folosit:
+  * Singleton, pentru conexiunea cu baza de date (Mysql), in clasa Database.
+  * Clase utilitare (statice).
+  * State Pattern pentru aplicatia principala.
 
 ##Folosirea unui AI 
