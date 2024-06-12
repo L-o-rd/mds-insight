@@ -5,13 +5,9 @@ import java.util.ArrayList;
 
 public class Question {
 	public List<String> choices;
-	public String text,id_room;
+	public String text;
 	public int answer;
-
-	public Question(String text) {
-		this.text = text;
-	}
-
+	
 	public Question() {
 		this.choices = new ArrayList<>();
 	}
@@ -21,15 +17,7 @@ public class Question {
 		question.text = text;
 		return question;
 	}
-
-	public String getText() {
-		return text;
-	}
-
-	public void setId_room(String id_room) {
-		this.id_room = id_room;
-	}
-
+	
 	public Question addChoice(final String choice) {
 		this.choices.add(choice);
 		return this;
