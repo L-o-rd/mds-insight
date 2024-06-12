@@ -23,6 +23,7 @@ public class PrepareState extends State {
     private CheckBox cchoice1, cchoice2, cchoice3, cchoice4;
     private boolean waitingForPlayers;
     private List<Question> questions;
+    private List<CheckBox> qchecks;
     private boolean viewQuestions;
     private int xback = 0;
 
@@ -30,6 +31,7 @@ public class PrepareState extends State {
         super(game);
 
         this.questions = new ArrayList<>();
+        this.qchecks = new ArrayList<>();
 
         this.add = new SmallButton(((Content.WIDTH) >> 1) - (SmallButton.width()) - 5, 7, "Add") {
             @Override
@@ -48,6 +50,7 @@ public class PrepareState extends State {
                 else if(cchoice4.checked) q.setAnswer(4);
 
                 questions.add(q);
+                qchecks.add(new CheckBox(10 + (q.text.length() + 5) * Font.CHAR_WIDTH, 10 + (questions.size() - 1) * 15));
             }
         };
 
@@ -121,7 +124,25 @@ public class PrepareState extends State {
             @Override
             public void clicked() {
                 if (!questions.isEmpty()) {
-                    questions.remove(questions.size() - 1);
+                	var nquestions = new ArrayList<Question>();
+                	var nchecks = new ArrayList<CheckBox>();
+                    for(int i = 0; i < questions.size(); ++i) {
+                    	if(!qchecks.get(i).checked) {
+                    		nquestions.add(questions.get(i));
+                    		nchecks.add(qchecks.get(i));
+                    	}
+                    }
+                    
+                    questions = null;
+                    questions = nquestions;
+                    
+                    qchecks = null;
+                    qchecks = nchecks;
+                    
+                    for(int i = 0; i < qchecks.size(); ++i) {
+                		qchecks.get(i).x = 10 + (questions.get(i).text.length() + 5) * Font.CHAR_WIDTH;
+                		qchecks.get(i).y = 10 + i * 15;
+                    }
                 }
             }
         };
@@ -184,7 +205,11 @@ public class PrepareState extends State {
                 this.question.render(screen, game.input);
             } else {
                 for(int i = 0; i < questions.size(); ++i) {
-                    Font.write(screen, i + 1 +  ". " + questions.get(i).text, 10, 10 + i * (Font.CHAR_HEIGHT + 2), 0xfdeadf);
+                    Font.write(screen, i + 1 +  ". " + questions.get(i).text, 10, 10 + i * (Font.CHAR_HEIGHT + 7), 0xfdeadf);
+                }
+                
+                for(var check : this.qchecks) {
+                	check.render(screen);
                 }
 
                 this.delete.render(screen, game.input);
@@ -235,6 +260,10 @@ public class PrepareState extends State {
                 this.choice4.update(game.input);
                 this.question.update(input);
             } else {
+            	for(var check : this.qchecks) {
+                	check.update(input);
+                }
+            	
                 this.delete.update(input);
             }
 
