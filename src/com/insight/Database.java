@@ -23,6 +23,17 @@ public final class Database {
         }
 	}
 	
+	public void setStarted(final String id) {
+		try {
+			var pstmt = this.connection.prepareStatement("update rooms set started = ? where id = ?");
+			pstmt.setBoolean(1, true);
+			pstmt.setString(2, id);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void removeQuestions(final String id) {
 		if(id == null) return;
 		
@@ -116,6 +127,78 @@ public final class Database {
 		}
 	}
 	
+	public Question questionFor(final String id) {
+		int cquest = 0;
+		
+		try {
+			var pstmt = this.connection.prepareStatement("select * from rooms where id = ?");
+			pstmt.setString(1, id);
+			var rset = pstmt.executeQuery(); 
+			if(rset.next()) cquest = rset.getInt("cquest");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			var pstmt = this.connection.prepareStatement("select * from questions where id_room = ?");
+			pstmt.setString(1, id);
+			var rset = pstmt.executeQuery(); 
+			for(int i = 0; i <= cquest; ++i) {
+				if(!rset.next()) return null;
+			}
+			
+			var q = Question.with(rset.getString("quiz"))
+                    .addChoice(rset.getString("choice1"))
+                    .addChoice(rset.getString("choice2"))
+                    .addChoice(rset.getString("choice3"))
+                    .addChoice(rset.getString("choice4"));
+			q.setAnswer(rset.getInt("answer") - 1);
+			return q;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	public int placeFor(final String user, final String id) {
+		var list = new ArrayList<String>();
+		
+		try {
+			var pstmt = this.connection.prepareStatement("select * from joined where id_room = ? order by score desc");
+			pstmt.setString(1, id);
+			var rset = pstmt.executeQuery();
+			while(rset.next()) {
+				list.add(rset.getString("username"));
+			}
+			
+			return list.indexOf(user) + 1;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return 1;
+	}
+	
+	public List<Integer> getScores(final String id) {
+		var list = new ArrayList<Integer>();
+		
+		try {
+			var pstmt = this.connection.prepareStatement("select * from joined where id_room = ? order by score desc limit 3");
+			pstmt.setString(1, id);
+			var rset = pstmt.executeQuery();
+			while(rset.next()) {
+				list.add(rset.getInt("score"));
+			}
+			
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return list;
+	}
+	
 	public boolean wasKicked(final String name) {
 		if(name == null) return false;
 		
@@ -153,6 +236,39 @@ public final class Database {
 		}
 	}
 	
+	public boolean roomFinished(final String id) {
+		try {
+			var pstmt = this.connection.prepareStatement("select * from questions where id_room = ?");
+			pstmt.setString(1, id);
+			var rset = pstmt.executeQuery();
+			int num = 0;
+			while(rset.next()) {
+				++num;
+			}
+			
+			pstmt.close();
+			pstmt = this.connection.prepareStatement("select cquest from rooms where id = ?");
+			pstmt.setString(1, id);
+			rset = pstmt.executeQuery(); rset.next();
+			int cquest = rset.getInt(1);
+			return cquest >= num;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	
+	public void nextQuestion(final String id) {
+		try {
+			var pstmt = this.connection.prepareStatement("update rooms set cquest = cquest + 1 where id = ?");
+			pstmt.setString(1, id);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public List<Player> getPlayers(final String id) {
 		List<Player> players = new ArrayList<Player>();
 		
@@ -178,7 +294,7 @@ public final class Database {
 		
 		try {
 			for (var question : questions) {
-				var pstmt = this.connection.prepareStatement("insert into questions values (?, ?, ?, ?, ?, ?, ?)");
+				var pstmt = this.connection.prepareStatement("insert into questions (quiz, choice1, choice2, choice3, choice4, answer, id_room) values (?, ?, ?, ?, ?, ?, ?)");
 				pstmt.setString(1, question.text);
 				pstmt.setString(2, question.choices.get(0));
 				pstmt.setString(3, question.choices.get(1));
@@ -211,9 +327,63 @@ public final class Database {
 		return false;
 	}
 	
+	public void setTimer(final String id, final int timer) {
+		try {
+			var pstmt = this.connection.prepareStatement("update rooms set timer = ? where id = ?");
+			pstmt.setInt(1, timer);
+			pstmt.setString(2, id);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public int getTimer(final String id) {
+		try {
+			var pstmt = this.connection.prepareStatement("select timer from rooms where id = ?");
+			pstmt.setString(1, id);
+			var rset = pstmt.executeQuery(); rset.next();
+			return rset.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return 0;
+	}
+	
+	public void addScore(final String user, final String id) {
+		try {
+			var pstmt = this.connection.prepareStatement("update joined set score = score + 700 where id_room = ? and username = ?");
+			pstmt.setString(1, id);
+			pstmt.setString(2, user);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public List<String> top3(final String id) {
+		var list = new ArrayList<String>();
+		
+		try {
+			var pstmt = this.connection.prepareStatement("select * from joined where id_room = ? order by score desc limit 3");
+			pstmt.setString(1, id);
+			var rset = pstmt.executeQuery();
+			while(rset.next()) {
+				list.add(rset.getString("username"));
+			}
+			
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return list;
+	}
+	
 	public void createRoom(final String id) {
 		try {
-			var pstmt = this.connection.prepareStatement("insert into rooms values (?, ?, ?)");
+			var pstmt = this.connection.prepareStatement("insert into rooms (id, started, joinable) values (?, ?, ?)");
 			pstmt.setString(1, id);
 			pstmt.setBoolean(2, false);
 			pstmt.setBoolean(3, false);

@@ -45,7 +45,7 @@ public class MinesweeperState extends State {
             
             if (this.revealed) {
                 if (this.nbombs > 0) {
-                    Font.write(screen, String.valueOf(this.nbombs), x + 8 , y + 8, 0xff0000);
+                    Font.write(screen, String.valueOf(this.nbombs), x + 7, y + 6, 0x334521);
                 }
             }
         }
@@ -55,7 +55,7 @@ public class MinesweeperState extends State {
     private long endTime;
     private int xback = 0;
     private static final int BOARD_SIZE = 7;
-    private static final int MINE_COUNT = 9;
+    private static final int MINE_COUNT = 6;
     private static final int TILE_SIZE = 20;
     private final MineTile[] board;
     private final ArrayList<MineTile> mineList;
@@ -223,7 +223,7 @@ public class MinesweeperState extends State {
             Font.write(screen, msgWin, (screen.width - msgWin.length() * Font.CHAR_WIDTH) >> 1, (screen.height - 39) >> 1, 0xff7fff);
             long elapsedTime = (endTime - startTime) / 1000; // Convert to seconds
             final String timeMsg = "Time: " + elapsedTime + "s";
-            Font.write(screen, timeMsg, (screen.width - timeMsg.length() * Font.CHAR_WIDTH) >> 1, (screen.height - 10) >> 1, 0xff0000);
+            Font.write(screen, timeMsg, (screen.width - timeMsg.length() * Font.CHAR_WIDTH) >> 1, (screen.height - 10) >> 1, 0xfdeadf);
         }
 
         this.back.render(screen, game.input);

@@ -26,12 +26,27 @@ public class PrepareState extends State {
     private List<CheckBox> qchecks;
     private boolean viewQuestions;
     private int xback = 0;
+    
+    public void init() {
+    	waitingForPlayers = false;
+    	this.questions = new ArrayList<>();
+        this.qchecks = new ArrayList<>();
+        this.viewQuestions = false;
+        question.clear();
+        choice1.clear();
+        choice2.clear();
+        choice3.clear();
+        choice4.clear();
+        checks.clear();
+        players.clear();
+        cchoice1.checked = false;
+        cchoice2.checked = false;
+        cchoice3.checked = false;
+        cchoice4.checked = false;
+    }
 
     public PrepareState(Game game) {
         super(game);
-
-        this.questions = new ArrayList<>();
-        this.qchecks = new ArrayList<>();
 
         this.add = new SmallButton(((Content.WIDTH) >> 1) - (SmallButton.width()) - 5, 7, "Add") {
             @Override
@@ -64,7 +79,10 @@ public class PrepareState extends State {
         this.host = new SmallButton(((Content.WIDTH) >> 1) - (SmallButton.width()) - 5, Content.HEIGHT - 7 - SmallButton.height(), "Host") {
             @Override
             public void clicked() {
+            	if(questions.isEmpty()) return;
+            	
                 var last = (CreateState) game.getState(CREATE_STATE);
+                Database.get().setTimer(last.getID(), 30);
                 Database.get().addQuestions(last.getID(), questions);
                 Database.get().setJoinable(last.getID());
                 waitingForPlayers = true;
@@ -74,6 +92,9 @@ public class PrepareState extends State {
         this.start = new SmallButton(((Content.WIDTH) >> 1) - ((SmallButton.width() * 3) >> 1) - 5, Content.HEIGHT - 7 - SmallButton.height(), "Start") {
             @Override
             public void clicked() {
+            	var last = (CreateState) game.getState(CREATE_STATE);
+            	Database.get().setStarted(last.getID());
+            	game.setState(OBSERVE_STATE);
             }
         };
 
@@ -174,7 +195,6 @@ public class PrepareState extends State {
         this.cchoice3 = new CheckBox(this.choice2.x + this.choice2.width + 7, this.choice2.y + 1);
         this.cchoice4 = new CheckBox(this.choice4.x + this.choice4.width + 7, this.choice4.y + 1);
 
-        this.viewQuestions = false;
     }
 
     private List<CheckBox> checks = new ArrayList<CheckBox>();

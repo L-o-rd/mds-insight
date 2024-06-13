@@ -18,13 +18,22 @@ import com.insight.graphics.TextBox;
 public class RoomState extends State {
 	private Button next, back, toMenu;
 	private int currentAvatar;
-	private TextBox nameBox;
+	public TextBox nameBox;
 
 	private double ang = 0.0;
 	private int xarrow = 0;
 	private int xback = 0;
 	
 	private boolean waiting = false;
+	
+	public void init() {
+		currentAvatar = 0;
+		nameBox.clear();
+		waiting = false;
+		kicked = false;
+		started = false;
+		waitKicked = waitStarted = 0;
+	}
 
 	public RoomState(Game game) {
 		super(game);
@@ -89,7 +98,7 @@ public class RoomState extends State {
 		} else {
 			screen.blit(Art.avatars.get(this.currentAvatar), (screen.width - 64) >> 1, (screen.height - 96) >> 1);
 			
-			final String msg = kicked ? "You have been kicked!" : "Waiting for the host ...";
+			final String msg = kicked ? "You have been kicked!" : "Waiting for the host to start ...";
 			Font.write(screen, msg, (screen.width - msg.length() * Font.CHAR_WIDTH) >> 1, screen.height - 15 * 4, 0xfdeadf);
 		
 			if(kicked) {
@@ -99,6 +108,12 @@ public class RoomState extends State {
 	}
 	
 	private boolean kicked = false;
+	private long waitKicked = 0;
+	private Thread waiter;
+	
+	private long waitStarted = 0;
+	private Thread swaiter;
+	private boolean started = false;
 
 	@Override
 	public void update(Input input) {
@@ -120,9 +135,63 @@ public class RoomState extends State {
 				this.back.update(input);
 			}
 		} else {
-			kicked = Database.get().wasKicked(this.nameBox.getInputText());
+			final long elapsed = System.currentTimeMillis() - waitKicked;
+			if(elapsed >= 200) {
+				if(waiter != null) {
+					try {
+						waiter.join();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				waitKicked = System.currentTimeMillis();
+				waiter = new Thread() {
+					@Override
+					public void run() {
+						kicked = Database.get().wasKicked(nameBox.getInputText());
+					}
+				};
+				
+				waiter.start();
+			}
+			
 			if(kicked) {
 				this.toMenu.update(input);
+			} else {
+				final long selapsed = System.currentTimeMillis() - waitStarted;
+				if(selapsed >= 200) {
+					if(swaiter != null) {
+						try {
+							swaiter.join();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+					
+					waitStarted = System.currentTimeMillis();
+					swaiter = new Thread() {
+						@Override
+						public void run() {
+							var last = (JoinState) game.getState(JOIN_STATE);
+							started = Database.get().roomStarted(last.getID());
+						}
+					};
+					
+					swaiter.start();
+				}
+				
+				synchronized(this) {
+					if(started) {
+						try {
+							swaiter.join();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						
+						game.setState(PLAY_STATE);
+					}
+				}
 			}
 		}
 	}

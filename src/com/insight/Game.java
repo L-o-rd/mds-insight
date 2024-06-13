@@ -23,6 +23,8 @@ public class Game {
 		this.states.add(new PrepareState(this));
 		this.states.add(new State2048(this));
 		this.states.add(new MinesweeperState(this));
+		this.states.add(new PlayState(this));
+		this.states.add(new ObserveState(this));
 		this.current = State.MENU_STATE;
 		this.input = input;
 	}
@@ -37,6 +39,7 @@ public class Game {
 	
 	public void setState(final int state) {
 		this.current = state;
+		this.states.get(current).init();
 	}
 	
 	public void render(Screen screen) {
