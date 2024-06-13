@@ -61,7 +61,7 @@ public class MinesweeperState extends State {
     private final ArrayList<MineTile> mineList;
     private int tilesClicked;
     private boolean gameOver, win;
-    private Button back;
+    private Button back, playAgain;
 
     public MinesweeperState(Game game) {
         super(game);
@@ -86,6 +86,13 @@ public class MinesweeperState extends State {
             public void clicked() {
                 resetBoard();
                 game.setState(State.MINIGAMES_STATE);
+            }
+        };
+        this.playAgain = new BigButton((Content.WIDTH - BigButton.width()) >> 1, ((Content.HEIGHT + SmallButton.height()) >> 1) + 10, "Play Again") {
+            @Override
+            public void clicked() {
+                resetBoard();
+                game.setState(State.MINESWEEPER_STATE);
             }
         };
     }
@@ -213,6 +220,7 @@ public class MinesweeperState extends State {
         if (gameOver) {
             final String msgGameOver = "Game Over!";
             Font.write(screen, msgGameOver, (screen.width - msgGameOver.length() * Font.CHAR_WIDTH) >> 1, (screen.height - 39) >> 1, 0xff0000);
+            this.playAgain.render(screen, game.input);
         }
 
         if (win) {
@@ -223,7 +231,7 @@ public class MinesweeperState extends State {
             Font.write(screen, msgWin, (screen.width - msgWin.length() * Font.CHAR_WIDTH) >> 1, (screen.height - 39) >> 1, 0xff7fff);
             long elapsedTime = (endTime - startTime) / 1000; // Convert to seconds
             final String timeMsg = "Time: " + elapsedTime + "s";
-            Font.write(screen, timeMsg, (screen.width - timeMsg.length() * Font.CHAR_WIDTH) >> 1, (screen.height - 10) >> 1, 0xff0000);
+            Font.write(screen, timeMsg, (screen.width - timeMsg.length() * Font.CHAR_WIDTH) >> 1, (screen.height - 10) >> 1, 0xff7fff);
         }
 
         this.back.render(screen, game.input);
@@ -232,6 +240,7 @@ public class MinesweeperState extends State {
     @Override
     public void update(Input input) {
         this.back.update(input);
+        this.playAgain.update(input);
         
         if(!gameOver) {
             final int wd = BOARD_SIZE * TILE_SIZE;
@@ -260,5 +269,4 @@ public class MinesweeperState extends State {
             }
         }
     }
-
 }

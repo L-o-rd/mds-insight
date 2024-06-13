@@ -1,3 +1,9 @@
+// Sursa functii joc 2048: https://github.com/daniel-huang-1230/Game-2048/blob/master/Board.java
+// Din link-ul de mai sus au fost folosite urmatoarele functii:
+//      -> moveLeft, moveRight, moveUp, moveDown
+//      -> canMoveLeft, canMoveRight, canMoveUp, canMoveDown
+//      -> isGameOver
+
 package com.insight.states;
 
 import com.insight.Content;
@@ -42,7 +48,7 @@ public class State2048 extends State {
     private final Board2048[] board;
     private int[][] boardNumbers;
     private int score;
-    private Button back;
+    private Button back, playAgain;
 
     private static final int COLOR_EMPTY = 0xccc0b3;
     private static final int COLOR_2 = 0xeee4da;
@@ -80,6 +86,14 @@ public class State2048 extends State {
             public void clicked() {
                 resetBoard();
                 game.setState(State.MINIGAMES_STATE);
+            }
+        };
+
+        this.playAgain = new BigButton((Content.WIDTH - BigButton.width()) >> 1, ((Content.HEIGHT + SmallButton.height()) >> 1) + 10, "Play Again") {
+            @Override
+            public void clicked() {
+                resetBoard();
+                game.setState(State.STATE_2048);
             }
         };
     }
@@ -397,7 +411,7 @@ public class State2048 extends State {
     }
 
     final int w = 10, s = 25;
-    private boolean gameOver = false;
+    private boolean gameOver = false, win = false;
 
     public int[] determineTileColors(int tileValue) {
 
@@ -444,6 +458,7 @@ public class State2048 extends State {
                 break;
             case 2048:
                 tileColor = COLOR_2048;
+                win = true;
                 break;
             default:
                 tileColor = COLOR_EMPTY;
@@ -456,7 +471,6 @@ public class State2048 extends State {
         return colors;
     }
 
-
     @Override
     public void render(Screen screen) {
         screen.fill(0, 0, screen.width, screen.height, 0xf6c858);
@@ -465,11 +479,27 @@ public class State2048 extends State {
 
         if (gameOver) {
             screen.fill(0, 0, screen.width, screen.height, 0xf6c858);
+            screen.blitWrap(Art.back, xback * 1, 0);
+            screen.blitWrap(Art.back, 30 + xback + Art.back.width, 0); ++xback;
             final String msgGameOver = "Game Over!";
             final String msgScore = "Score: " + score;
-            Font.write(screen, msgGameOver, ((screen.width - (msgGameOver.length()) * Font.CHAR_WIDTH) >> 1), ((screen.height - 39) >> 1), 0x8fffff);
+            Font.write(screen, msgGameOver, ((screen.width - (msgGameOver.length()) * Font.CHAR_WIDTH) >> 1), ((screen.height - 39) >> 1), 0xff0000);
             Font.write(screen, msgScore, ((screen.width - msgScore.length() * Font.CHAR_WIDTH) >> 1), ((screen.height - 9) >> 1), 0xff7fff);
+
+            this.playAgain.render(screen, game.input);
         } else {
+            if (win) {
+                screen.fill(0, 0, screen.width, screen.height, 0xf6c858);
+                screen.blitWrap(Art.back, xback * 1, 0);
+                screen.blitWrap(Art.back, 30 + xback + Art.back.width, 0); ++xback;
+
+                final String msgGameOver = "You win!";
+                final String msgScore = "Score: " + score;
+                Font.write(screen, msgGameOver, ((screen.width - (msgGameOver.length()) * Font.CHAR_WIDTH) >> 1), ((screen.height - 39) >> 1), 0xff0000);
+                Font.write(screen, msgScore, ((screen.width - msgScore.length() * Font.CHAR_WIDTH) >> 1), ((screen.height - 9) >> 1), 0xff7fff);
+
+                this.playAgain.render(screen, game.input);
+            }
             int posx = (screen.width >> 1) - ((w + s) * BOARD_SIZE) / 2;
             int posy = (screen.height >> 1) - ((w + s) * BOARD_SIZE) / 2 - 10;
             for (int i = 0; i < BOARD_SIZE; ++i) {
@@ -564,11 +594,6 @@ public class State2048 extends State {
         }
 
         this.back.update(input);
+        this.playAgain.update(input);
     }
 }
-
-// Sursa functii joc 2048: https://github.com/daniel-huang-1230/Game-2048/blob/master/Board.java
-// Din link-ul de mai sus au fost folosite urmatoarele functii:
-//      -> moveLeft, moveRight, moveUp, moveDown
-//      -> canMoveLeft, canMoveRight, canMoveUp, canMoveDown
-//      -> isGameOver
