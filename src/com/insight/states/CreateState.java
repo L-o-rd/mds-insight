@@ -15,6 +15,7 @@ public class CreateState extends State {
 	private Button generateCode;
 	private Button back, next;
 	private String uniqueId;
+	private int xback = 0;
 	
 	public CreateState(Game game) {
 		super(game);
@@ -73,6 +74,8 @@ public class CreateState extends State {
 	@Override
 	public void render(Screen screen) {
 		screen.fill(0, 0, screen.width, screen.height, 0xf6c858);
+		screen.blitWrap(Art.back, xback * 1, 0);
+		screen.blitWrap(Art.back, 30 + xback + Art.back.width, 0); ++xback;
 		this.back.render(screen, game.input);
 		this.next.render(screen, game.input);
 		this.generateCode.render(screen, game.input);

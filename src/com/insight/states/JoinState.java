@@ -13,6 +13,7 @@ public class JoinState extends State {
 	private Button submit;
 	private Button back;
 	private TextBox box;
+	private int xback = 0;
 
 	public JoinState(Game game) {
 		super(game);
@@ -49,6 +50,8 @@ public class JoinState extends State {
 	@Override
 	public void render(Screen screen) {
 		screen.fill(0, 0, screen.width, screen.height, 0xf6c858);
+		screen.blitWrap(Art.back, xback * 1, 0);
+		screen.blitWrap(Art.back, 30 + xback + Art.back.width, 0); ++xback;
 
 		if (wasClicked && !codeFound) {
 			final String msg = "Join code '" + inputText + "' is not valid!";
