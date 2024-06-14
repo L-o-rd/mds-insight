@@ -5,6 +5,8 @@ Aplicatia are doua sectiuni, cea de minigames si cea de joc multiplayer. In sect
 
 ## Backlog si user stories: 
 ![image](https://github.com/L-o-rd/mds-insight/assets/116594293/dc5553ac-b81e-4e7e-91d6-9b9e2290e661)
+![Screenshot_84](https://github.com/L-o-rd/mds-insight/assets/128260253/8977db24-b538-4c2f-9e64-a9a65efc7b0f)
+
 
 ## Diagrama UML (state UML)
 ![Untitled (2)](https://github.com/L-o-rd/mds-insight/assets/116594293/e38eb637-d930-4f1f-aac4-1f486afb7ead)
