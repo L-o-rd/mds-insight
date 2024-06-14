@@ -29,6 +29,7 @@ Am fost folosit:
 
 ## Teste automate
 Am incercat sa integram teste automate in branch-ul unit-testing, dar compilarea claselor java nu se completeaza.
+![Screenshot_83](https://github.com/L-o-rd/mds-insight/assets/128260253/2e263aed-10c9-4e13-974e-9b7af41d0d77)
 
 ## Demo
 
