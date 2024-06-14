@@ -184,14 +184,13 @@ public class PlayState extends State {
 			choice4.update(input);
 		} else {
 			var lastr = (JoinState) game.getState(JOIN_STATE);
-			if(Database.get().roomFinished(lastr.getID())) {
+			var nquest = Database.get().questionFor(lastr.getID());
+			if(nquest == null || Database.get().roomFinished(lastr.getID())) {
 				finished = true;
 				var lastrr = (RoomState) game.getState(ROOM_STATE);
 				place = Database.get().placeFor(lastrr.nameBox.sb.toString(), lastr.getID());
 				return;
 			}
-			
-			var nquest = Database.get().questionFor(lastr.getID());
 			
 			if(!cquestion.text.equals(nquest.text)) {
 				answering = true;
