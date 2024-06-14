@@ -191,10 +191,9 @@ public class PrepareState extends State {
         this.choice4.y = ((Content.HEIGHT + 55) >> 1);
 
         this.cchoice1 = new CheckBox(this.choice1.x - 20, this.choice1.y + 1);
-        this.cchoice2 = new CheckBox(this.choice3.x - 20, this.choice3.y);
-        this.cchoice3 = new CheckBox(this.choice2.x + this.choice2.width + 7, this.choice2.y + 1);
+        this.cchoice3 = new CheckBox(this.choice3.x - 20, this.choice3.y);
+        this.cchoice2 = new CheckBox(this.choice2.x + this.choice2.width + 7, this.choice2.y + 1);
         this.cchoice4 = new CheckBox(this.choice4.x + this.choice4.width + 7, this.choice4.y + 1);
-
     }
 
     private List<CheckBox> checks = new ArrayList<CheckBox>();
