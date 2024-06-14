@@ -27,6 +27,9 @@ Am fost folosit:
 ![Screenshot_81](https://github.com/L-o-rd/mds-insight/assets/128260253/4991d426-1428-4672-8fa1-db387b8bdf5f)
 ![Screenshot_82](https://github.com/L-o-rd/mds-insight/assets/128260253/5872f41f-8185-4285-b7b1-02ab0c013a63)
 
+## Teste automate
+Am incercat sa integram teste automate in branch-ul unit-testing, dar compilarea claselor java nu se completeaza.
+
 ## Demo
 
 Part 1/2 https://youtu.be/j9oZbsiAGlI
