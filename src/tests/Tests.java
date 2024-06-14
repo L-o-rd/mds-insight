@@ -4,6 +4,8 @@ import org.junit.*;
 
 import com.insight.graphics.TextBox;
 
+import static org.junit.Assert.assertEquals;
+
 public class Tests {
 	@Test
 	public void shouldHaveText() {
