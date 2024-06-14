@@ -103,6 +103,10 @@ public class MinesweeperState extends State {
             }
         }
     }
+    
+    public void init() {
+        startTime = System.currentTimeMillis();
+    }
 
     private void resetBoard() {
         for (int r = 0; r < BOARD_SIZE; r++) {
