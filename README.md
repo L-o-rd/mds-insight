@@ -24,5 +24,8 @@ Am fost folosit:
 ![Screenshot_81](https://github.com/L-o-rd/mds-insight/assets/128260253/4991d426-1428-4672-8fa1-db387b8bdf5f)
 ![Screenshot_82](https://github.com/L-o-rd/mds-insight/assets/128260253/5872f41f-8185-4285-b7b1-02ab0c013a63)
 
+## Demo
 
+Part 1/2 https://youtu.be/j9oZbsiAGlI
+Part 2/2 https://youtu.be/fFTRj1cqJw4
 
