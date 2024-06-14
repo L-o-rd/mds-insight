@@ -24,3 +24,9 @@ Am fost folosit:
   * State Pattern pentru aplicatia principala.
 
 ## Folosirea unui AI 
+![Screenshot_80](https://github.com/L-o-rd/mds-insight/assets/128260253/2b1b27bc-7515-4321-86d8-1102b06bfaa6)
+![Screenshot_81](https://github.com/L-o-rd/mds-insight/assets/128260253/4991d426-1428-4672-8fa1-db387b8bdf5f)
+![Screenshot_82](https://github.com/L-o-rd/mds-insight/assets/128260253/5872f41f-8185-4285-b7b1-02ab0c013a63)
+
+
+
