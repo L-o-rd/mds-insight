@@ -15,32 +15,35 @@ public class CreateState extends State {
 	private Button generateCode;
 	private Button back, next;
 	private String uniqueId;
-	
+
 	public CreateState(Game game) {
 		super(game);
 
+		// Initializes the "Next" button. Moves to the PREPARE_STATE if a unique ID is already generated.
 		this.next = new SmallButton((Content.WIDTH >> 1) - SmallButton.width() - 5, Content.HEIGHT - 10 - SmallButton.height(), "Next") {
 			@Override
 			public void clicked() {
-				if(uniqueId == null) return;
-				game.setState(PREPARE_STATE);
+				if(uniqueId == null) return;  // Does nothing if no ID has been generated yet.
+				game.setState(PREPARE_STATE);  // Changes the game state to PREPARE_STATE.
 			}
 		};
 
+		// Initializes the "Back" button. Resets the unique ID and changes the state back to MENU_STATE.
 		this.back = new SmallButton((Content.WIDTH >> 1) + 5, Content.HEIGHT - 10 - SmallButton.height(), "Back") {
 			@Override
 			public void clicked() {
-				uniqueId = null;
-				idGenerated = false;
-				game.setState(MENU_STATE);
+				uniqueId = null;  // Resets the unique ID.
+				idGenerated = false;  // Indicates that the ID is not generated.
+				game.setState(MENU_STATE);  // Returns to the menu state.
 			}
 		};
 
-		this.generateCode = new BigButton((Content.WIDTH - BigButton.width()) / 2,  ((Content.HEIGHT - BigButton.height() ) /2),"Generate Code") {
+		// Initializes the "Generate Code" button, which triggers unique ID generation.
+		this.generateCode = new BigButton((Content.WIDTH - BigButton.width()) / 2,  ((Content.HEIGHT - BigButton.height()) /2),"Generate Code") {
 			@Override
 			public void clicked() {
-				idGenerated = true;
-				uniqueId = generateUniqueId();
+				idGenerated = true;  // Flags that the ID has now been generated.
+				uniqueId = generateUniqueId();  // Calls the method to generate a unique ID.
 			}
 		};
 	}
@@ -62,22 +65,21 @@ public class CreateState extends State {
 	private static final String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 	public static String generateUniqueId() {
-		Random random = new Random();
+		Random random = new Random();  // Creates an instance of Random for generating random numbers.
 		String Id;
 
-		List<String> existingIds = Database.get().getRoomsIDs();
+		List<String> existingIds = Database.get().getRoomsIDs();  // Retrieves existing IDs from the database to ensure uniqueness.
 		do {
-			StringBuffer sb = new StringBuffer(6);
-			for (int i = 0; i < 6; i++)
-			{
-				sb.append(chars.charAt(random.nextInt(chars.length())));
+			StringBuffer sb = new StringBuffer(6);  // Prepares a buffer to build the ID with a length of 6 characters.
+			for (int i = 0; i < 6; i++) {
+				sb.append(chars.charAt(random.nextInt(chars.length())));  // Appends a random character from the set to the buffer.
 			}
-			
-			Id = sb.toString();
-		} while(existingIds.contains(Id));
-		
-		Database.get().createRoom(Id);
-		return Id;
+
+			Id = sb.toString();  // Converts the StringBuffer to String to form the potential ID.
+		} while(existingIds.contains(Id));  // Continues to generate a new ID if the generated one already exists.
+
+		Database.get().createRoom(Id);  // Registers the new unique ID in the database.
+		return Id;  // Returns the newly generated unique ID.
 	}
 
 	@Override
