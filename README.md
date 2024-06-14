@@ -16,11 +16,11 @@ Proiectul se afla in totalitate pe github, fiind impartit in res, pentru partea 
 ## Design pattern
 Am fost folosit:
   * Singleton, pentru conexiunea cu baza de date (Mysql), in clasa Database.
-  * ![WhatsApp Image 2024-06-14 at 12 19 42_02714a16](https://github.com/L-o-rd/mds-insight/assets/116028853/84081110-da63-4226-9b77-d691dd0f6ce0)
+   ![WhatsApp Image 2024-06-14 at 12 19 42_02714a16](https://github.com/L-o-rd/mds-insight/assets/116028853/84081110-da63-4226-9b77-d691dd0f6ce0)
   * Clase utilitare (statice).
-  * ![WhatsApp Image 2024-06-14 at 12 20 38_98b9d325](https://github.com/L-o-rd/mds-insight/assets/116028853/bf3d713c-af26-40ec-b893-55f169b71426)
+   ![WhatsApp Image 2024-06-14 at 12 20 38_98b9d325](https://github.com/L-o-rd/mds-insight/assets/116028853/bf3d713c-af26-40ec-b893-55f169b71426)
   * State Pattern pentru aplicatia principala.
-  * ![WhatsApp Image 2024-06-14 at 12 21 08_13d9e109](https://github.com/L-o-rd/mds-insight/assets/116028853/63734bd8-eea8-43bb-a873-bf7cec079897)
+   ![WhatsApp Image 2024-06-14 at 12 21 08_13d9e109](https://github.com/L-o-rd/mds-insight/assets/116028853/63734bd8-eea8-43bb-a873-bf7cec079897)
 
 ## Folosirea unui AI & Comentarii cod
 ![Screenshot_80](https://github.com/L-o-rd/mds-insight/assets/128260253/2b1b27bc-7515-4321-86d8-1102b06bfaa6)
