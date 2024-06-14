@@ -11,6 +11,7 @@ Aplicatia are doua sectiuni, cea de minigames si cea de joc multiplayer. In sect
 ## Diagrama UML (state UML)
 ![Untitled (2)](https://github.com/L-o-rd/mds-insight/assets/116594293/e38eb637-d930-4f1f-aac4-1f486afb7ead)
 
+## Raportare bug-uri + Pull request
 
 ## Source control
 Proiectul se afla in totalitate pe github, fiind impartit in res, pentru partea de resurse, si src/com.insight care contine sursele pentru frontend/backend.
