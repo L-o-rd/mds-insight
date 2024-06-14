@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Compile main code
-javac -d out -cp "lib/*" src/main/java/com/yourapp/*.java
+javac -d out -cp "lib/*" src/com/insight/*.java
 
 # Compile test code
-javac -d out -cp "lib/*:out" src/test/java/com/yourapp/*.java
+javac -d out -cp "lib/*:out" src/tests/*.java
 
 # Run tests
-java -cp "lib/*:out" org.junit.runner.JUnitCore com.yourapp.MyGuiAppTest
+java -cp "lib/*:out" org.junit.runner.JUnitCore tests.Tests
