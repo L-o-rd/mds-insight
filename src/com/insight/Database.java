@@ -11,13 +11,13 @@ import com.insight.states.Question;
 import java.util.ArrayList;
 
 public final class Database {
-	private static final String URL = "";
+	private static final String URL = "jdbc:mysql://localhost:3306/insight";
 	private static Database instance = new Database();
 	private Connection connection;
 	
 	private Database() {
 		try {
-            this.connection = DriverManager.getConnection(URL, "", "");
+            this.connection = DriverManager.getConnection(URL, "root", "Bucur3st1");
         } catch (SQLException e) {
             e.printStackTrace();
         }
